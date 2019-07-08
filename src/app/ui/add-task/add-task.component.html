@@ -1,0 +1,97 @@
+<h4 class="col-md-3 pl-6 pb-4"> {{title}}</h4>
+<div class="col-md-12">
+    <ngb-alert *ngIf="invalid && errors" type="danger" (close)="errors = null;">
+      <li *ngFor="let error of errors">{{error}}</li>
+    </ngb-alert>
+  </div>
+<form name="form" (ngSubmit)="onSubmitTask(f)" #f="ngForm" novalidate>
+  <div class="form-horizontal col-md-8">
+    <div class="form-group row">
+      <label for="parentTask" class="col-md-2 col-form-label">Project:</label>
+      <div class="col-md-6">
+        <ng-select2 [(ngModel)]="taskInfo.ProjectID" name="projectid" #projectid="ngModel" style="width:100%"
+          [ngClass]="{ 'is-invalid': f.submitted && projectid.invalid }" [disabled]="IsParentTask || edited" required>
+          <option [value]="-1"> Select Project Name</option>
+          <option *ngFor="let project of projectdata" [value]="project.ProjectID">{{project.ProjectName}}</option>
+        </ng-select2>
+        <!--<div *ngIf="f.submitted && taskInfo.ProjectID == -1" class="invalid-feedback">
+          <div *ngIf="taskInfo.ProjectID == -1">Project Name is required</div>
+        </div>-->
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="taskName" class="col-md-2 col-form-label">Task:</label>
+      <div class="col-md-6">
+        <input type="text" class="form-control" name="taskName" [(ngModel)]="taskInfo.TaskName" #taskName="ngModel"
+          [ngClass]="{ 'is-invalid': f.submitted && taskName.invalid }" required />
+        <!-- <div *ngIf="f.submitted && taskName.invalid" class="invalid-feedback">
+          <div *ngIf="taskName.errors.required">Task Name is required</div>
+        </div> -->
+      </div>
+    </div>
+    <div *ngIf="!edited" class="form-group row">
+      <div class="offset-2 col-md-6 form-check">
+        <input type="checkbox" class="form-check-input" name="IsParentTask" [(ngModel)]="IsParentTask"
+          (click)='IsParentTaskClick()'>
+        <label class="form-check-label" for="defaultCheck1"> Parent Task</label>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="priority" class="col-md-2 col-form-label">Priority:</label>
+      <div class="col-md-6">
+        <input type="range" class="form-control-range slider" min="0" max="30" step="1" name="priority"
+          [(ngModel)]="taskInfo.Priority" #priority="ngModel" [disabled]="IsParentTask" />
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="parentTask" class="col-md-2 col-form-label">Parent Task:</label>
+      <div class="col-md-6">
+        <ng-select2 [(ngModel)]="taskInfo.ParentID" name="parentTask" #parentTask="ngModel" style="width:100%"
+          [ngClass]="{ 'is-invalid': f.submitted && projectid.invalid }" required [disabled]="IsParentTask">
+          <option [value]="-1"> Select ParentTask</option>
+          <option *ngFor="let parent of parentTaskList" [value]="parent.ParentID">{{parent.ParentTaskName}}</option>
+        </ng-select2>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="startDate" class="col-md-2 col-form-label">Start Date:</label>
+      <div class="col-md-6">
+        <input type="date" class="form-control" date-date-format="dd-MM-yyyy" name="startDate"
+          [(ngModel)]="taskInfo.StartDate" #startDate="ngModel"
+          [ngClass]="{ 'is-invalid': f.submitted && startDate.invalid }" required [disabled]="IsParentTask" />
+        <!-- <div *ngIf="f.submitted && startDate.invalid" class="invalid-feedback">
+          <div *ngIf="startDate.errors.required">Start Date is required</div>
+        </div> -->
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="endDate" class="col-md-2 col-form-label">End Date</label>
+      <div class="col-md-6">
+        <input type="date" class="form-control" name="endDate" [(ngModel)]="taskInfo.EndDate" #endDate="ngModel"
+          [ngClass]="{ 'is-invalid': f.submitted && endDate.invalid }" required [disabled]="IsParentTask" />
+        <!-- <div *ngIf="f.submitted && endDate.invalid" class="invalid-feedback">
+          <div *ngIf="endDate.errors.required">End Date is required</div>
+        </div> -->
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="projectName" class="col-md-2 col-form-label">User:</label>
+      <div class="col-md-6">
+        <ng-select2 [(ngModel)]="taskInfo.UserID" name="userId" #userId="ngModel" style="width:100%"
+          [ngClass]="{ 'is-invalid': f.submitted && userId.invalid }" [disabled]="IsParentTask || edited" required>
+          <option [value]="-1"> Select User</option>
+          <option *ngFor="let user of usersdata" [value]="user.UserID">{{user.FirstName + ' ' + user.LastName}}</option>
+        </ng-select2>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="offset-2 col-md-6 pl-3">
+        <button type="submit" class="btn btn-info btn-sm" id="btnAddTask">{{btnText}}</button>
+        <button type="button" (click)="reset()" *ngIf="!edited" class="btn btn-info btn-sm ml-2"
+          id="btnReset">Reset</button>
+        <button type="button" (click)="cancel()" *ngIf="edited" class="btn btn-info btn-sm ml-2"
+          id="btnCancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+</form>

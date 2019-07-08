@@ -1,0 +1,58 @@
+<h4 class="col-md-3 pl-6 pb-4"> {{title}}</h4>
+<ngb-alert *ngIf="successMessage" type="success" (close)="successMessage = null">
+  {{ successMessage }}
+</ngb-alert>
+<div class="form-group row">
+  <label for="parentTask" class="col-md-1 col-form-label">Project:</label>
+  <div class="col-md-4">
+    <ng-select2 [(ngModel)]="ProjectID" name="project" #project="ngModel" style="width:100%"
+      (ngModelChange)='selectChangeHandler($event)'>
+      <option [value]=" -1"> Select Project Name</option>
+      <option *ngFor="let project of projectdata" [value]="project.ProjectID">{{project.ProjectName}}</option>
+    </ng-select2>
+  </div>
+  <div class="col-md-6">
+    <label>Sort Task By: </label>
+    <button (click)="sortTasks('StartDate')" class="ml-2">Start Date</button>
+    <button (click)="sortTasks('EndDate')" class="ml-2">End Date</button>
+    <button (click)="sortTasks('Priority')" class="ml-2 ">Priority</button>
+    <button (click)="sortTasks('Status')" class="ml-2">Completed</button>
+  </div>
+</div>
+<div class="col-md-12 col-sm-12">
+  <table id="tblTaskList" class="table table-striped row-border hover">
+    <thead>
+      <tr>
+        <th>Task</th>
+        <th>Parent</th>
+        <th>Priority</th>
+        <th>Start</th>
+        <th>End</th>
+        <th class="edit-btn"></th>
+        <th class="end-task-btn"></th>
+        <th class="delete-task-btn"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let task of tasksdata |orderBy:sortColumn:reverseSort">
+        <td>{{task.TaskName}}</td>
+        <td>{{task.ParentTaskName}}</td>
+        <td>{{task.Priority}}</td>
+        <td>{{task.StartDate | date:'dd/MM/yyyy'}}</td>
+        <td>{{task.EndDate | date:'dd/MM/yyyy'}}</td>
+        <td>
+          <button (click)="editTask(task.TaskID)" class="btn btn-info btn-sm" [disabled]="!task.Status"> Edit</button>
+        </td>
+        <td>
+          <button (click)="endTask(task)" class="btn btn-info btn-sm" [disabled]="!task.Status"> End Task</button>
+        </td>
+        <td>
+          <button (click)="deleteTask(task.TaskID)" class="btn btn-info btn-sm"> Delete Task</button>
+        </td>
+      </tr>
+      <tr *ngIf="noRecordFound">
+        <td class="empty-table"> {{noRecordFound}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

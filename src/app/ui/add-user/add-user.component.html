@@ -1,0 +1,85 @@
+<h4 class="col-md-3 pl-6 pb-4"> {{title}}</h4>
+<div class="col-md-12">
+  <ngb-alert *ngIf="invalid && errors" type="danger" (close)="errors = null;">
+    <li *ngFor="let error of errors">{{error}}</li>
+  </ngb-alert>
+  <ngb-alert *ngIf="message" type={{type}} (close)="message = null">
+    {{ message }}
+  </ngb-alert>
+</div>
+<form name="form" (ngSubmit)="onSubmitForm(f)" #f="ngForm" novalidate>
+  <div class="form-horizontal col-md-8">
+    <div class="form-group row">
+      <label for="firstName" class="col-md-2 col-form-label">First Name:</label>
+      <div class="col-md-6">
+        <input type="text" class="form-control" name="firstName" [(ngModel)]="userDetail.FirstName" #firstName="ngModel"
+          [ngClass]="{ 'is-invalid': f.submitted && firstName.invalid }" required />
+        <!-- <div *ngIf="f.submitted && firstName.invalid" class="invalid-feedback">
+          <div *ngIf="firstName.errors.required">First Name is required</div>
+        </div> -->
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="lastName" class="col-md-2 col-form-label">Last Name:</label>
+      <div class="col-md-6">
+        <input type="text" class="form-control" name="lastName" [(ngModel)]="userDetail.LastName" #lastName="ngModel"
+          [ngClass]="{ 'is-invalid': f.submitted && lastName.invalid }" required />
+        <!-- <div *ngIf="f.submitted && lastName.invalid" class="invalid-feedback">
+          <div *ngIf="lastName.errors.required">First Name is required</div>
+        </div> -->
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="employeeid" class="col-md-2 col-form-label">Employee ID:</label>
+      <div class="col-md-6">
+        <input type="text" class="form-control" name="employeeId" [(ngModel)]="userDetail.EmployeeID"
+          #employeeId="ngModel" [ngClass]="{ 'is-invalid': f.submitted && employeeId.invalid }" required />
+        <!-- <div *ngIf="f.submitted && employeeId.invalid" class="invalid-feedback">
+          <div *ngIf="employeeId.errors.required">Employee ID is required</div>
+        </div> -->
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="offset-2 col-md-6 pl-3">
+        <button type="submit" class="btn btn-info btn-sm" id="btnAddUser">{{btnText}}</button>
+        <button type="button" (click)="resetUser()" *ngIf="!edited" class="btn btn-info btn-sm ml-2"
+          id="btnReset">Reset</button>
+        <button type="button" (click)="cancel()" *ngIf="edited" class="btn btn-info btn-sm ml-2"
+          id="btnCancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+</form>
+<hr>
+<div class="form-group row">
+  <span class="pl-4">Search:</span>
+  <div class="col-md-3">
+    <input type="text" class="form-control" id="search" [(ngModel)]="searchText" placeholder="Search...">
+  </div>
+</div>
+<div class="col-md-12 col-sm-12 pt-2">
+  <table id="tblusers" class="table dataTable row-border table-striped hover">
+    <thead>
+      <tr>
+        <th (click)="sortUsers('FirstName')" [ngClass]="getSortClass('FirstName')" class="sorting">First Name</th>
+        <th (click)="sortUsers('LastName')" [ngClass]="getSortClass('LastName')" class="sorting">Last name </th>
+        <th (click)="sortUsers('EmployeeID')" [ngClass]="getSortClass('EmployeeID')" class="sorting">Employee ID</th>
+        <th class="edit-btn"></th>
+        <th class="delete-task-btn"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users | userfilter:searchText |orderBy:sortColumn:reverseSort">
+        <td>{{user.FirstName}}</td>
+        <td>{{user.LastName}}</td>
+        <td>{{user.EmployeeID}}</td>
+        <td>
+          <button (click)="editUser(user.UserID)" class="btn btn-info btn-sm">Edit</button>
+        </td>
+        <td>
+          <button (click)="deleteUser(user.UserID)" class="btn btn-info btn-sm">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
